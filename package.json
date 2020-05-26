@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/WiltencirDG/SchelasVideo/issues"
   },
-  "homepage": "https://github.com/WiltencirDG/SchelasVideo#readme"
+  "homepage": "https://github.com/WiltencirDG/SchelasVideo#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
 }
