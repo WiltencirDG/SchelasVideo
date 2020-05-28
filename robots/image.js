@@ -1,10 +1,12 @@
 const imageDownloader = require('image-downloader')
 const google = require('googleapis').google
+const pexelsClient = require('node-pexels').Client
+const pexelsApiKey = require('../credentials/pexels.json').apiKey
+const googleCredentials = require('../credentials/google-search.json')
 const customSearch = google.customsearch('v1')
 const state = require('./state.js')
 const fs = require('fs')
-
-const googleCredentials = require('../credentials/google-search.json')
+const pexels = new pexelsClient(pexelsApiKey)
 
 async function robot(){
     const content = state.load()
@@ -20,7 +22,10 @@ async function robot(){
         for(const sentence of content.sentences) {
             for(let keywordIndex = 0; keywordIndex < sentence.keywords.length; keywordIndex++){
                 const query = `${content.searchTerm} ${sentence.keywords[keywordIndex]}`
-                const sentenceImages = await fetchGoogleAndReturnImagesLinks(query)
+                //const sentenceImages = await fetchGoogleAndReturnImagesLinks(query)
+                //const sentenceImages = await fetchPexelsAndReturnImagesLink(query)
+                const sentenceImages = await fetchImagesLink(query)
+                //console.log(sentenceImages, null ,4 )
                 if(sentenceImages !== undefined){
                     sentence.images = sentenceImages
                     sentence.googleSearchQuery = query
@@ -28,6 +33,41 @@ async function robot(){
                 }
             }
         }
+    }
+
+    async function fetchImagesLink(query){
+        await fetchGoogleAndReturnImagesLinks(query)
+            .catch((error) => {
+                console.log(`> Erro ao buscar no Google: ${error}`)
+            })
+            .then((result) => {
+                return result
+            })
+
+        await fetchPexelsAndReturnImagesLink(query)
+            .catch((error) => {
+                console.log(`> Erro ao buscar no Pexel: ${error}`)
+
+                console.log(`> Saindo...`)
+                process.exit(0)
+            })
+            .then((result) =>{
+                return result
+            })
+    }
+
+    async function fetchPexelsAndReturnImagesLink(query){
+        await pexels.search(query, 5, 1)
+            .then((response) => {
+                if (response.photos.length > 0) {
+                    return response.photos.map((item) => {return item.url})
+                } else {
+                    throw new Error('> Nenhuma imagem encontrada');
+                }
+            })
+            .catch((error) => {
+               throw new Error(error);
+            });
     }
 
     async function fetchGoogleAndReturnImagesLinks(query){
