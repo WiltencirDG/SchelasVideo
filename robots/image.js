@@ -8,6 +8,8 @@ const googleCredentials = require('../credentials/google-search.json')
 
 async function robot(){
     const content = state.load()
+    
+    state.clearFolder()
 
     await fetchImagesOfAllSentences(content)
     await downloadAllImages(content)
@@ -34,7 +36,7 @@ async function robot(){
             cx: googleCredentials.searchEngineId,
             q: query,
             searchType: "image",
-            num: 6
+            num: 9
         })
         
         if(response.data.items !== undefined){
