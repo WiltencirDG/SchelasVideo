@@ -16,9 +16,15 @@ async function robot(){
 
     async function fetchImagesOfAllSentences(content){
         for(const sentence of content.sentences) {
-            const query = `${content.searchTerm} ${sentence.keywords[0]}`
-            sentence.images = await fetchGoogleAndReturnImagesLinks(query)
-            sentence.googleSearchQuery = query
+            for(let keywordIndex = 0; keywordIndex < sentence.keywords.length; keywordIndex++){
+                const query = `${content.searchTerm} ${sentence.keywords[keywordIndex]}`
+                const sentenceImages = await fetchGoogleAndReturnImagesLinks(query)
+                if(sentenceImages !== undefined){
+                    sentence.images = sentenceImages
+                    sentence.googleSearchQuery = query
+                    break
+                }
+            }
         }
     }
 
@@ -48,7 +54,7 @@ async function robot(){
     
                     try{
                         if(content.downloadedImages.includes(imageUrl)){
-                            throw new Error('Imagem já foi baixada.')
+                            throw new Error('> Imagem já foi baixada.')
                         }
                         
                         await downloadAndSave(imageUrl, `${sentenceIndex}-original.png`)
