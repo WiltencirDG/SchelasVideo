@@ -10,10 +10,10 @@ const googleCredentials = require('../credentials/google-search.json')
 async function robot(){
     const content = state.load()
 
-    //await fetchImagesOfAllSentences(content)
-    //await downloadAllImages(content)
-    //await convertAllImages(content)
-    //await createAllSentenceImages(content)
+    await fetchImagesOfAllSentences(content)
+    await downloadAllImages(content)
+    await convertAllImages(content)
+    await createAllSentenceImages(content)
     await createYoutubeThumbnail()
 
     //state.save(content)
