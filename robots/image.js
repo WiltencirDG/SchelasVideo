@@ -28,7 +28,7 @@ async function robot(){
             cx: googleCredentials.searchEngineId,
             q: query,
             searchType: "image",
-            num: 2
+            num: 6
         })
         
         if(response.data.items !== undefined){
