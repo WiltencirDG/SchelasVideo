@@ -102,6 +102,14 @@ async function robot(){
                 6: {
                   size: '1920x400',
                   gravity: 'center'
+                },
+                7: {
+                    size: '1920x1080',
+                    gravity: 'center'
+                },
+                8: {
+                    size: '800x1080',
+                    gravity: 'west'
                 }
         
               }
