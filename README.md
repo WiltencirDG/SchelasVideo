@@ -9,3 +9,4 @@ Project to create video automatically.
     - Natural Language Understanding
   - Google
     - Custom Search API
+  - After Effects CC 2019
