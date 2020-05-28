@@ -10,3 +10,4 @@ Project to create video automatically.
   - Google
     - Custom Search API
   - After Effects CC 2019
+  - Pexels
