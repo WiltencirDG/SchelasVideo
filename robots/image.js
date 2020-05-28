@@ -22,10 +22,8 @@ async function robot(){
         for(const sentence of content.sentences) {
             for(let keywordIndex = 0; keywordIndex < sentence.keywords.length; keywordIndex++){
                 const query = `${content.searchTerm} ${sentence.keywords[keywordIndex]}`
-                //const sentenceImages = await fetchGoogleAndReturnImagesLinks(query)
-                //const sentenceImages = await fetchPexelsAndReturnImagesLink(query)
                 const sentenceImages = await fetchImagesLink(query)
-                //console.log(sentenceImages, null ,4 )
+                
                 if(sentenceImages !== undefined){
                     sentence.images = sentenceImages
                     sentence.googleSearchQuery = query
