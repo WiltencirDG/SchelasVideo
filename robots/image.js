@@ -11,9 +11,9 @@ async function robot(){
     const content = state.load()
 
     //await fetchImagesOfAllSentences(content)
-    await downloadAllImages(content)
+    //await downloadAllImages(content)
     await convertAllImages(content)
-    state.save(content)
+    //state.save(content)
 
     async function fetchImagesOfAllSentences(content){
         for(const sentence of content.sentences) {
@@ -80,7 +80,7 @@ async function robot(){
 
     async function convertImage(sentenceIndex){
         return new Promise((resolve, reject) => {
-            const inputFile = `./content/${sentenceIndex}-original.png`[0]
+            const inputFile = `./content/${sentenceIndex}-original.png[0]`
             const outputFile = `./content/${sentenceIndex}-converted.png`
             const width = 1920
             const height = 1080
