@@ -13,17 +13,18 @@ async function robot(){
     
     state.clearFolder()
 
-    await fetchImagesOfAllSentences(content)
+    //await fetchImagesOfAllSentences(content)
     await downloadAllImages(content)
     
     state.save(content)
 
     async function fetchImagesOfAllSentences(content){
+        console.log('> Buscando imagens...')
+
         for(const sentence of content.sentences) {
             for(let keywordIndex = 0; keywordIndex < sentence.keywords.length; keywordIndex++){
                 const query = `${content.searchTerm} ${sentence.keywords[keywordIndex]}`
                 const sentenceImages = await fetchImagesLink(query)
-                
                 if(sentenceImages !== undefined){
                     sentence.images = sentenceImages
                     sentence.googleSearchQuery = query
@@ -34,38 +35,31 @@ async function robot(){
     }
 
     async function fetchImagesLink(query){
-        await fetchGoogleAndReturnImagesLinks(query)
+
+
+        let response = await fetchGoogleAndReturnImagesLinks(query)
             .catch((error) => {
                 console.log(`> Erro ao buscar no Google: ${error}`)
             })
-            .then((result) => {
-                return result
-            })
 
-        await fetchPexelsAndReturnImagesLink(query)
+        response = await fetchPexelsAndReturnImagesLink(query)
             .catch((error) => {
                 console.log(`> Erro ao buscar no Pexel: ${error}`)
 
                 console.log(`> Saindo...`)
                 process.exit(0)
             })
-            .then((result) =>{
-                return result
-            })
+
+        return response
     }
 
     async function fetchPexelsAndReturnImagesLink(query){
-        await pexels.search(query, 5, 1)
-            .then((response) => {
-                if (response.photos.length > 0) {
-                    return response.photos.map((item) => {return item.url})
-                } else {
-                    throw new Error('> Nenhuma imagem encontrada');
-                }
-            })
+        const response = await pexels.search(query, 3, 1)
             .catch((error) => {
                throw new Error(error);
             });
+
+        return response.photos.map((item) => {return item.src.original})
     }
 
     async function fetchGoogleAndReturnImagesLinks(query){
@@ -74,7 +68,7 @@ async function robot(){
             cx: googleCredentials.searchEngineId,
             q: query,
             searchType: "image",
-            num: 9
+            num: 10
         })
         
         if(response.data.items !== undefined){
@@ -113,7 +107,8 @@ async function robot(){
     async function downloadAndSave(url, fileName){
         return imageDownloader.image({
             url: url,
-            dest: `./content/${fileName}`
+            dest: `./content/${fileName}`,
+            headers: headers
         })
     }
 
