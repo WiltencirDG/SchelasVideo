@@ -109,5 +109,7 @@ credentials/*.json
 content.json
 
 content/*.*
+results/
+
 Salvamento automático do Adobe After Effects
 templates/1/Logs de template.aep

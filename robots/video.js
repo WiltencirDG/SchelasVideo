@@ -12,7 +12,7 @@ async function robot(){
     await createAllSentenceImages(content)
     await createYoutubeThumbnail()
     await createAfterEffectsScript(content)
-    await renderVideoWithAfterEffects()
+    await renderVideoWithAfterEffects(content)
 
     state.save(content)
 
@@ -151,11 +151,11 @@ async function robot(){
         await state.saveScript(content)
     }
 
-    async function renderVideoWithAfterEffects(){
+    async function renderVideoWithAfterEffects(content){
         return new Promise((resolve, reject) => {
             const aerenderFilePath = 'C:\\Program Files\\Adobe\\Adobe After Effects CC 2019\\Support Files\\aerender.exe'
             const templateFilePath= `${rootPath}\\templates\\1\\template.aep`
-            const destinationFilePath = `${rootPath}\\content\\output.mov`
+            const destinationFilePath = `${rootPath}\\results\\${content.searchTerm}.mov`
 
             console.log('> Starting After Effects')
 

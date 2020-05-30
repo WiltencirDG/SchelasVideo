@@ -13,23 +13,26 @@ async function robot(){
     
     state.clearFolder()
 
-    //await fetchImagesOfAllSentences(content)
+    await fetchImagesOfAllSentences(content)
     await downloadAllImages(content)
     
     state.save(content)
 
     async function fetchImagesOfAllSentences(content){
         console.log('> Buscando imagens...')
+        let query
 
-        for(const sentence of content.sentences) {
+        for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
             for(let keywordIndex = 0; keywordIndex < sentence.keywords.length; keywordIndex++){
-                const query = `${content.searchTerm} ${sentence.keywords[keywordIndex]}`
-                const sentenceImages = await fetchImagesLink(query)
-                if(sentenceImages !== undefined){
-                    sentence.images = sentenceImages
-                    sentence.googleSearchQuery = query
-                    break
+
+                if (sentenceIndex === 0) {
+                query = `${content.searchTerm}`
+                } else {
+                query = `${content.searchTerm} ${content.sentences[sentenceIndex].keywords[keywordIndex]}`
                 }
+                
+                content.sentences[sentenceIndex].images = await fetchImagesLink(query)
+                content.sentences[sentenceIndex].googleSearchQuery = query
             }
         }
     }
@@ -42,14 +45,14 @@ async function robot(){
                 console.log(`> Erro ao buscar no Google: ${error}`)
             })
 
-        response = await fetchPexelsAndReturnImagesLink(query)
+        /*response = await fetchPexelsAndReturnImagesLink(query)
             .catch((error) => {
                 console.log(`> Erro ao buscar no Pexel: ${error}`)
 
                 console.log(`> Saindo...`)
                 process.exit(0)
             })
-
+        */
         return response
     }
 
@@ -78,7 +81,8 @@ async function robot(){
 
     async function downloadAllImages(content){
         content.downloadedImages = []
-
+        
+        let downloadIndex = 0
         for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++){
             const images = content.sentences[sentenceIndex].images
 
@@ -91,8 +95,10 @@ async function robot(){
                             throw new Error('> Imagem já foi baixada.')
                         }
                         
-                        await downloadAndSave(imageUrl, `${sentenceIndex}-original.png`)
+                        // await downloadAndSave(imageUrl, `${sentenceIndex}-original.png`)
+                        await downloadAndSave(imageUrl, `${downloadIndex}-original.png`)
                         content.downloadedImages.push(imageUrl)
+                        downloadIndex++
 
                         console.log(`> Sucesso ao baixar ${imageUrl}`)
                         break
@@ -107,8 +113,7 @@ async function robot(){
     async function downloadAndSave(url, fileName){
         return imageDownloader.image({
             url: url,
-            dest: `./content/${fileName}`,
-            headers: headers
+            dest: `./content/${fileName}`
         })
     }
 
