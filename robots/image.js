@@ -23,7 +23,7 @@ async function robot(){
         let query
 
         for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
-            for(let keywordIndex = 0; keywordIndex < sentence.keywords.length; keywordIndex++){
+            for(let keywordIndex = 0; keywordIndex < content.sentences[sentenceIndex].keywords.length; keywordIndex++){
 
                 if (sentenceIndex === 0) {
                 query = `${content.searchTerm}`
